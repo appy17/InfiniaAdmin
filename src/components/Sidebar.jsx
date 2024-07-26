@@ -1,130 +1,165 @@
 import React, { useState } from "react";
-import InfiniaLogo from "../assets/InfiniaLogo.png";
-import { MdDashboard } from "react-icons/md";
-import { FaCartShopping } from "react-icons/fa6";
-import { MdBrandingWatermark } from "react-icons/md";
-import { FaBlog } from "react-icons/fa";
-import { MdVideoCameraFront } from "react-icons/md";
-
+import { FaChevronLeft } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa";
+import { RiDashboardFill } from "react-icons/ri";
+import { IoHome } from "react-icons/io5";
+import { LiaBlogSolid } from "react-icons/lia";
+import { Link } from "react-router-dom";
+import { SiAboutdotme } from "react-icons/si";
+import { TbBrandSafari } from "react-icons/tb";
 export default function Sidebar() {
-  let brand = ["Ecomagix", "Claymagix", "Woodmagix", "Skyace"];
-  let products = [
-    "Jails",
-    "Bricks",
-    "Doors",
-    "Boards",
-    "Furniture",
-    "Shuttering",
-    "Flooring Solution",
-    "Elevational Roofing",
-    "Construction Blocks",
-  ];
-  let product2 = products.reverse();
-  const handleNavigate = (loc) => {
-    console.log("Navigating to:", loc);
-  };
+  const [isExpanded, setIsExpanded] = useState(true);
 
-  const [brands, setBrands] = useState(false);
-  const [product, setProduct] = useState(false);
-
-  const handleBrands = () => {
-    setBrands(true);
-  };
-  const handleBrandsLeave = () => {
-    setBrands(false);
-  };
-  const handleProducts = () => {
-    setProduct(true);
-  };
-  const handleProductsLeave = () => {
-    setProduct(false);
+  const toggleSidebar = () => {
+    setIsExpanded(!isExpanded);
   };
 
   return (
-    <div className="w-[310px] fixed bg-gray-100 text-white p-4 h-full">
-      <img
-        className="h-[70px] ml-[70px]"
-        src={InfiniaLogo}
-        alt="Infinia Logo"
-      />
-      <div>
-        <hr className="mt-[10px]" />
+    <div
+      style={{
+        zIndex: "",
+      }}
+      className={`h-[85vh] fixed mt-[97px]  pt-5 transition-width duration-500 z-2  ${
+        isExpanded ? "w-[14%]" : "w-[5%]"
+      } bg-gray-100`}
+    >
+      <div className="pl-8 flex flex-col justify-between">
+        {/* Dashbard */}
+        <div>
+          <Link to="/">
+            <div className="mt-4  flex items-center cursor-pointer w-full">
+              <RiDashboardFill size={20} />
+              {isExpanded && (
+                <h3
+                  className={`transition-all duration-500 ${
+                    isExpanded
+                      ? "opacity-100 max-h-10"
+                      : "opacity-0 max-h-0 overflow-hidden"
+                  } text-lg font-bold`}
+                >
+                  DASHBOARD
+                </h3>
+              )}
+            </div>
+          </Link>
+        </div>
+
+        {/* Home */}
+        <div>
+          <Link to="/home">
+            <ul className="mt-4  flex items-center cursor-pointer w-full ">
+              <li>
+                <details close>
+                  <summary className="flex ">
+                    {" "}
+                    <IoHome size={20} />{" "}
+                    {isExpanded && (
+                      <h3
+                        className={`transition-all ml-2 duration-500 -mt-1 ${
+                          isExpanded
+                            ? "opacity-100 max-h-10"
+                            : "opacity-0 max-h-0 overflow-hidden"
+                        } text-lg font-bold`}
+                      >
+                        HOME
+                      </h3>
+                    )}
+                  </summary>
+                </details>
+              </li>
+            </ul>
+          </Link>
+        </div>
+
+        {/* Blog */}
+        <div>
+          <Link to="/blog">
+            <div className="w-full mt-[10px] cursor-pointer flex items-center gap-2">
+              <LiaBlogSolid size={20} />
+              {isExpanded && (
+                <h3
+                  className={`transition-all duration-500 ${
+                    isExpanded
+                      ? "opacity-100 max-h-10"
+                      : "opacity-0 max-h-0 overflow-hidden"
+                  } text-lg font-bold`}
+                >
+                  BLOG
+                </h3>
+              )}
+            </div>
+          </Link>
+        </div>
+
+        {/*About*/}
+        <div>
+          <Link to="/about">
+            <div className="w-full mt-[10px] cursor-pointer flex items-center gap-2">
+              <SiAboutdotme size={20} />
+              {isExpanded && (
+                <h3
+                  className={`transition-all duration-500 ${
+                    isExpanded
+                      ? "opacity-100 max-h-10"
+                      : "opacity-0 max-h-0 overflow-hidden"
+                  } text-lg font-bold`}
+                >
+                  ABOUT
+                </h3>
+              )}
+            </div>
+          </Link>
+        </div>
+
+        {/*Brands*/}
+        <div>
+          <Link to="/brand">
+            <div className="w-full mt-[10px] cursor-pointer flex items-center gap-2">
+              <TbBrandSafari size={20} />
+              {isExpanded && (
+                <h3
+                  className={`transition-all duration-500 ${
+                    isExpanded
+                      ? "opacity-100 max-h-10"
+                      : "opacity-0 max-h-0 overflow-hidden"
+                  } text-lg font-bold`}
+                >
+                  BRAND
+                </h3>
+              )}
+            </div>
+          </Link>
+        </div>
+
+        {/* <Link to="/login">
+          <div className="w-full mt-[10px] cursor-pointer flex items-center gap-2">
+            <TbBrandSafari size={20} />
+            {isExpanded && (
+              <h3
+                className={`transition-all duration-500 ${
+                  isExpanded
+                    ? "opacity-100 max-h-10"
+                    : "opacity-0 max-h-0 overflow-hidden"
+                } text-lg font-bold`}
+              >
+                LOGIN
+              </h3>
+            )}
+          </div>
+        </Link> */}
       </div>
-      <ul className="space-y-4 align-middle m-[50px]">
-        <li
-          onClick={() => handleNavigate("Dashboard")}
-          className="flex items-center p-2 hover:bg-gray-200 rounded-md transition-colors duration-200"
+      <div
+        className={`fixed top-[16%] z-1 transition-left duration-500 ${
+          !isExpanded ? "left-[5.5%]" : "left-[15.5%]"
+        } transform -translate-x-1/2`}
+      >
+        <button
+          className="bg-gray-600 p-3 btn-neutral rounded-full"
+          onClick={toggleSidebar}
         >
-          <MdDashboard className="text-gray-800 m-[5px] cursor-pointer" />
-          <p className="text-gray-800 ml-2 cursor-pointer">Dashboard</p>
-        </li>
-        <li
-          onMouseEnter={handleBrands}
-          onMouseLeave={handleBrandsLeave}
-          className="flex flex-col items-center p-2 hover:bg-gray-200 rounded-md transition-colors duration-200"
-        >
-          <div className="flex flex-row mr-[80px]">
-            <MdBrandingWatermark className="text-gray-800 m-[5px] cursor-pointer" />
-            <p className="text-gray-800 ml-2 cursor-pointer">Brands</p>
-          </div>
-          <div>
-            {brands && (
-              <div>
-                <ul>
-                  {brand.map((item) => (
-                    <li
-                      key={item}
-                      className="text-gray-800 m-2 text-left cursor-pointer hover:bg-gray-100"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </li>
-        <li
-          onMouseEnter={handleProducts}
-          onMouseLeave={handleProductsLeave}
-          className="flex flex-col items-center p-2 hover:bg-gray-200 rounded-md transition-colors duration-200"
-        >
-          <div className="flex flex-row mr-[80px]">
-            <FaCartShopping className="text-gray-800 cursor-pointer" />
-            <p className="text-gray-800 ml-2  cursor-pointer">Products</p>
-          </div>
-          <div>
-            {product && (
-              <div>
-                <ul>
-                  {product2.map((item) => (
-                    <li
-                      key={item}
-                      className="text-left text-gray-800 m-3 cursor-pointer hover:bg-gray-100"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </li>
-        <li
-          onClick={() => handleNavigate("Dashboard")}
-          className="flex items-center p-2 hover:bg-gray-200 rounded-md transition-colors duration-200"
-        >
-          <MdVideoCameraFront className="text-gray-800 m-[5px] cursor-pointer" />
-          <p className="text-gray-800 ml-2 cursor-pointer">Media & Events</p>
-        </li>
-        <li
-          onClick={() => handleNavigate("Dashboard")}
-          className="flex items-center p-2 hover:bg-gray-200 rounded-md transition-colors duration-200"
-        >
-          <FaBlog className="text-gray-800 m-[5px] cursor-pointer" />
-          <p className="text-gray-800 ml-2 cursor-pointer">Blogs</p>
-        </li>
-      </ul>
+          {isExpanded ? <FaChevronLeft /> : <FaChevronRight />}
+        </button>
+      </div>
     </div>
   );
 }

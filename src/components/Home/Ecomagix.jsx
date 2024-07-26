@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function Customer() {
+export default function Ecomagix() {
   return (
     <div>
-      Customer
+      
     </div>
   )
 }
