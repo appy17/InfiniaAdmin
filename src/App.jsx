@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -6,22 +6,49 @@ import Body from "./components/Body";
 import InfiniaLogo from "../src/assets/InfiniaLogo.png";
 
 export default function App() {
-  const [credentials, setCredentials] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Use useRef to keep the token across renders
+  const tokenRef = useRef(localStorage.getItem("token"));
 
   const navigate = useNavigate();
   const baseUrl = "http://localhost:8080";
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    // Check if token exists in the ref
+    const token = tokenRef.current;
+    console.log("Token on page load:", token);
+
     if (token) {
-      setIsAuthenticated(true);
+      verifyToken(token);
+    } else {
+      setIsLoading(false);
     }
   }, []);
+
+  const verifyToken = async (token) => {
+    try {
+      console.log("Verifying token...");
+      const response = await axios.post(`${baseUrl}/token/verify`, { token });
+
+      if (response.data.valid) {
+        setIsAuthenticated(true);
+        navigate("/dashboard");
+      } else {
+        console.log("Token invalid");
+        localStorage.removeItem("token");
+        tokenRef.current = null; // Clear the tokenRef
+      }
+    } catch (error) {
+      console.error("Token verification failed", error);
+      localStorage.removeItem("token");
+      tokenRef.current = null; // Clear the tokenRef
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -34,9 +61,11 @@ export default function App() {
   const handleVerify = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post(baseUrl + "/login/verify", credentials);
+      const response = await axios.post(`${baseUrl}/login/verify`, credentials);
       const { token } = response.data;
+      console.log("Token received:", token);
       localStorage.setItem("token", token);
+      tokenRef.current = token; // Store token in ref
       toast.success("Logged in Successfully");
       setIsAuthenticated(true);
       navigate("/dashboard");
@@ -46,12 +75,18 @@ export default function App() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = (e) => {
+    // e.preventDefault();
     console.log("Logout function called");
     localStorage.removeItem("token");
+    tokenRef.current = null; // Clear the tokenRef
     setIsAuthenticated(false);
     navigate("/");
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>

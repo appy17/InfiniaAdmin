@@ -78,7 +78,7 @@ export default function Event() {
     try {
       const response = await axios.get(baseUrl + "/events");
       setEvent(response.data.data[0]);
-      console.log("Event ", response.data.data[0]);
+      console.log("Event ", response.data.data);
     } catch (error) {
       console.error("Error fetching event: ", error);
     }
