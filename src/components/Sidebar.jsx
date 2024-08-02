@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { FaChevronLeft } from "react-icons/fa";
-import { FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { RiDashboardFill } from "react-icons/ri";
 import { IoHome } from "react-icons/io5";
 import { LiaBlogSolid } from "react-icons/lia";
 import { Link } from "react-router-dom";
 import { SiAboutdotme } from "react-icons/si";
 import { TbBrandSafari } from "react-icons/tb";
+import { MdOutlineEventSeat } from "react-icons/md";
+
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -16,149 +17,91 @@ export default function Sidebar() {
 
   return (
     <div
-      style={{
-        zIndex: "",
-      }}
-      className={`h-[85vh] fixed mt-[97px]  pt-5 transition-width duration-500 z-2  ${
+      className={`h-[85vh] fixed mt-[97px] pt-5 transition-width duration-500 z-20 ${
         isExpanded ? "w-[14%]" : "w-[5%]"
-      } bg-gray-100`}
+      } bg-gray-100 shadow-lg`}
     >
-      <div className="pl-8 flex flex-col justify-between">
-        {/* Dashbard */}
+      <div className="pl-4 flex flex-col justify-between h-full">
         <div>
           <Link to="/">
-            <div className="mt-4  flex items-center cursor-pointer w-full">
+            <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
               <RiDashboardFill size={20} />
               {isExpanded && (
-                <h3
-                  className={`transition-all duration-500 ${
-                    isExpanded
-                      ? "opacity-100 max-h-10"
-                      : "opacity-0 max-h-0 overflow-hidden"
-                  } text-lg font-bold`}
-                >
+                <h3 className="transition-all duration-500 text-lg font-bold ml-2">
                   DASHBOARD
                 </h3>
               )}
             </div>
           </Link>
-        </div>
 
-        {/* Home */}
-        <div>
           <Link to="/home">
-            <ul className="mt-4  flex items-center cursor-pointer w-full ">
-              <li>
-                <details close>
-                  <summary className="flex ">
-                    {" "}
-                    <IoHome size={20} />{" "}
-                    {isExpanded && (
-                      <h3
-                        className={`transition-all ml-2 duration-500 -mt-1 ${
-                          isExpanded
-                            ? "opacity-100 max-h-10"
-                            : "opacity-0 max-h-0 overflow-hidden"
-                        } text-lg font-bold`}
-                      >
-                        HOME
-                      </h3>
-                    )}
-                  </summary>
-                </details>
-              </li>
-            </ul>
+            <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
+              <IoHome size={20} />
+              {isExpanded && (
+                <h3 className="transition-all duration-500 text-lg font-bold ml-2">
+                  HOME
+                </h3>
+              )}
+            </div>
           </Link>
-        </div>
 
-        {/* Blog */}
-        <div>
           <Link to="/blog">
-            <div className="w-full mt-[10px] cursor-pointer flex items-center gap-2">
+            <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
               <LiaBlogSolid size={20} />
               {isExpanded && (
-                <h3
-                  className={`transition-all duration-500 ${
-                    isExpanded
-                      ? "opacity-100 max-h-10"
-                      : "opacity-0 max-h-0 overflow-hidden"
-                  } text-lg font-bold`}
-                >
+                <h3 className="transition-all duration-500 text-lg font-bold ml-2">
                   BLOG
                 </h3>
               )}
             </div>
           </Link>
-        </div>
 
-        {/*About*/}
-        <div>
           <Link to="/about">
-            <div className="w-full mt-[10px] cursor-pointer flex items-center gap-2">
+            <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
               <SiAboutdotme size={20} />
               {isExpanded && (
-                <h3
-                  className={`transition-all duration-500 ${
-                    isExpanded
-                      ? "opacity-100 max-h-10"
-                      : "opacity-0 max-h-0 overflow-hidden"
-                  } text-lg font-bold`}
-                >
+                <h3 className="transition-all duration-500 text-lg font-bold ml-2">
                   ABOUT
                 </h3>
               )}
             </div>
           </Link>
-        </div>
 
-        {/*Brands*/}
-        <div>
           <Link to="/brand">
-            <div className="w-full mt-[10px] cursor-pointer flex items-center gap-2">
+            <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
               <TbBrandSafari size={20} />
               {isExpanded && (
-                <h3
-                  className={`transition-all duration-500 ${
-                    isExpanded
-                      ? "opacity-100 max-h-10"
-                      : "opacity-0 max-h-0 overflow-hidden"
-                  } text-lg font-bold`}
-                >
+                <h3 className="transition-all duration-500 text-lg font-bold ml-2">
                   BRAND
+                </h3>
+              )}
+            </div>
+          </Link>
+
+          <Link to="/event">
+            <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
+              <MdOutlineEventSeat size={20} />
+              {isExpanded && (
+                <h3 className="transition-all duration-500 text-lg font-bold ml-2">
+                  EVENTS
                 </h3>
               )}
             </div>
           </Link>
         </div>
 
-        {/* <Link to="/login">
-          <div className="w-full mt-[10px] cursor-pointer flex items-center gap-2">
-            <TbBrandSafari size={20} />
-            {isExpanded && (
-              <h3
-                className={`transition-all duration-500 ${
-                  isExpanded
-                    ? "opacity-100 max-h-10"
-                    : "opacity-0 max-h-0 overflow-hidden"
-                } text-lg font-bold`}
-              >
-                LOGIN
-              </h3>
-            )}
-          </div>
-        </Link> */}
-      </div>
-      <div
-        className={`fixed top-[16%] z-1 transition-left duration-500 ${
-          !isExpanded ? "left-[5.5%]" : "left-[15.5%]"
-        } transform -translate-x-1/2`}
-      >
-        <button
-          className="bg-gray-600 p-3 btn-neutral rounded-full"
-          onClick={toggleSidebar}
+        <div
+          className={`absolute top-1/2 transform -translate-y-1/2 ${
+            isExpanded ? "left-[85%]" : "left-full"
+          } transition-left duration-500`}
         >
-          {isExpanded ? <FaChevronLeft /> : <FaChevronRight />}
-        </button>
+          <button
+            className="bg-gray-600 p-2 rounded-full focus:outline-none hover:bg-gray-500"
+            onClick={toggleSidebar}
+          >
+            {isExpanded ? <FaChevronLeft /> : <FaChevronRight />}
+          </button>
+        </div>
       </div>
     </div>
   );

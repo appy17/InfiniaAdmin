@@ -27,7 +27,7 @@ export default function Brand() {
   try {
     const response = await axios.get(baseUrl + "/brands");
     setBrand(response.data.data[0]);
-    // console.log('Brands ', brand);
+    console.log('Brands ', brand);
   } catch (error) {
     toast.error(`Something went Wrong`);
     console.log(`Occured Error while fetching data ${error}`);

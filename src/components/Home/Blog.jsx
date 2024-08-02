@@ -77,7 +77,7 @@ export default function Blog() {
      }
      setBlog((prevBlog) => ({ ...prevBlog, date: formattedDate }));
 
-     console.log("Blogq", info);
+    //  console.log("Blogq", info);
      setImage(info.image);
    } catch (error) {
      console.error("Error fetching blogs: ", error);
