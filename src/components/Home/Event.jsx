@@ -3,38 +3,23 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function Event() {
-  const [event, setEvent] = useState({
-    title: "",
-    events: [
-      {
-        description: "",
-        image: "",
-        date: "",
-      },
-    ],
-  });
+  const [events, setEvents] = useState([]);
 
   const baseUrl = "http://localhost:8080";
 
-  const handleEventChange = (e) => {
+  const handleEventChange = (e, index) => {
     const { name, value } = e.target;
-    if (name.startsWith("events[0].")) {
-      const key = name.slice(9);
-      setEvent((prevEvent) => ({
-        ...prevEvent,
-        events: [
-          {
-            ...prevEvent.events[0],
-            [key]: value,
-          },
-        ],
-      }));
-    } else {
-      setEvent((prevEvent) => ({
-        ...prevEvent,
-        [name]: value,
-      }));
-    }
+
+    setEvents((prevEvents) =>
+      prevEvents.map((event, i) =>
+        i === index
+          ? {
+              ...event,
+              [name]: value,
+            }
+          : event
+      )
+    );
   };
 
   const uploadToCloudinary = async (file) => {
@@ -56,48 +41,48 @@ export default function Event() {
     }
   };
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = async (e, index) => {
     const file = e.target.files[0];
     if (file) {
       const url = await uploadToCloudinary(file);
       if (url) {
-        setEvent((prevEvent) => ({
-          ...prevEvent,
-          events: [
-            {
-              ...prevEvent.events[0],
-              image: url,
-            },
-          ],
-        }));
+        setEvents((prevEvents) =>
+          prevEvents.map((event, i) =>
+            i === index
+              ? {
+                  ...event,
+                  image: url,
+                }
+              : event
+          )
+        );
       }
     }
   };
 
-  const fetchEvent = async () => {
+  const fetchEvents = async () => {
     try {
       const response = await axios.get(baseUrl + "/events");
-      setEvent(response.data.data[0]);
-      console.log("Event ", response.data.data);
+      setEvents(response.data.data);
+      console.log("Events ", response.data.data);
     } catch (error) {
-      console.error("Error fetching event: ", error);
+      console.error("Error fetching events: ", error);
     }
   };
 
   useEffect(() => {
-    fetchEvent();
+    fetchEvents();
   }, []);
 
-  const handleUpdate = async () => {
-    if (!event) {
+  const handleUpdate = async (index) => {
+    if (!events[index]) {
       toast.error("Event not found");
       return;
     } else {
       try {
-        console.log("Updated data ", event.image);
         const response = await axios.patch(
-          `${baseUrl}/events/update/${event._id}`,
-          event
+          `${baseUrl}/events/update/${events[index]._id}`,
+          events[index]
         );
         toast.success("Data Updated Successfully");
       } catch (error) {
@@ -121,53 +106,55 @@ export default function Event() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="w-[20%]">
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="title"
-                type="text"
-                value={event.title}
-                onChange={handleEventChange}
-              />
-            </td>
-            <td className="w-[20%]">
-              <img src={event.events[0].image} className="h-12" />
-              <a href={event.events[0].image}>View</a>
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="image"
-                type="file"
-                onChange={handleFileChange}
-              />
-            </td>
-            <td className="w-[20%]">
-              <textarea
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="events[0].description"
-                type="text"
-                value={event.events[0].description}
-                onChange={handleEventChange}
-              />
-            </td>
-            <td className="w-[20%]">
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="events[0].date"
-                type="date"
-                value={event.events[0].date}
-                onChange={handleEventChange}
-              />
-            </td>
-            <td>
-              <button
-                className="btn btn-success text-white btn-sm items-center"
-                onClick={handleUpdate}
-              >
-                Update
-              </button>
-            </td>
-          </tr>
+          {events.map((event, index) => (
+            <tr key={index}>
+              <td className="w-[20%]">
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="title"
+                  type="text"
+                  value={event.title}
+                  onChange={(e) => handleEventChange(e, index)}
+                />
+              </td>
+              <td className="w-[20%]">
+                <img src={event.image} />
+                <a href={event.events[0].image}>View</a>
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="image"
+                  type="file"
+                  onChange={(e) => handleFileChange(e, index)}
+                />
+              </td>
+              <td className="w-[20%]">
+                <textarea
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="description"
+                  type="text"
+                  value={event.description}
+                  onChange={(e) => handleEventChange(e, index)}
+                />
+              </td>
+              <td className="w-[20%]">
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="date"
+                  type="date"
+                  value={event.date}
+                  onChange={(e) => handleEventChange(e, index)}
+                />
+              </td>
+              <td>
+                <button
+                  className="btn btn-success text-white btn-sm items-center"
+                  onClick={() => handleUpdate(index)}
+                >
+                  Update
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

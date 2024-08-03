@@ -9,7 +9,7 @@ export default function App() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  
   // Use useRef to keep the token across renders
   const tokenRef = useRef(localStorage.getItem("token"));
 
@@ -20,7 +20,7 @@ export default function App() {
     // Check if token exists in the ref
     const token = tokenRef.current;
     console.log("Token on page load:", token);
-
+    localStorage.setItem('url',location.pathname)
     if (token) {
       verifyToken(token);
     } else {
@@ -30,21 +30,22 @@ export default function App() {
 
   const verifyToken = async (token) => {
     try {
-      console.log("Verifying token...");
-      const response = await axios.post(`${baseUrl}/token/verify`, { token });
-
+      console.log('Verifying token...');
+      const response = await axios.post(`${baseUrl}/login/verifyToken`, { token });
+     
       if (response.data.valid) {
         setIsAuthenticated(true);
-        navigate("/dashboard");
-      } else {
+        navigate(localStorage.getItem("url"));
+      }
+ {
         console.log("Token invalid");
-        localStorage.removeItem("token");
-        tokenRef.current = null; // Clear the tokenRef
+        // localStorage.removeItem("token");
+        tokenRef.current = null; 
       }
     } catch (error) {
       console.error("Token verification failed", error);
       localStorage.removeItem("token");
-      tokenRef.current = null; // Clear the tokenRef
+      tokenRef.current = null;
     } finally {
       setIsLoading(false);
     }
@@ -60,15 +61,15 @@ export default function App() {
 
   const handleVerify = async (event) => {
     event.preventDefault();
+    console.log("Path name ", location.pathname);
     try {
       const response = await axios.post(`${baseUrl}/login/verify`, credentials);
       const { token } = response.data;
       console.log("Token received:", token);
       localStorage.setItem("token", token);
-      tokenRef.current = token; // Store token in ref
+      tokenRef.current = token;
       toast.success("Logged in Successfully");
       setIsAuthenticated(true);
-      navigate("/dashboard");
     } catch (error) {
       toast.error("Invalid Credentials");
       console.error("Login failed", error);
@@ -76,10 +77,9 @@ export default function App() {
   };
 
   const handleLogout = (e) => {
-    // e.preventDefault();
     console.log("Logout function called");
     localStorage.removeItem("token");
-    tokenRef.current = null; // Clear the tokenRef
+    tokenRef.current = null; 
     setIsAuthenticated(false);
     navigate("/");
   };
