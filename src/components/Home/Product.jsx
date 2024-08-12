@@ -19,6 +19,7 @@ export default function Product() {
   const handleUpdateProduct = (product) => {
     if (product) {
       navigate("/productedit", { state: { product } });
+      console.log('Product ', product);
     } else {
       toast.error(`Product transfer failed`);
     }
@@ -29,7 +30,7 @@ export default function Product() {
   }, []);
 
   return (
-    <div className="m-[200px]" style={styles.container}>
+    <div className="ml-[550px] mt-[50px]" style={styles.container}>
       <h1 style={styles.header}>Product Title</h1>
       <div style={styles.productList}>
         {Array.isArray(products) &&

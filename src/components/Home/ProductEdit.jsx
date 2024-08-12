@@ -286,22 +286,33 @@ export default function ProductEdit() {
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
+
+    // If the input is a file input, update the productData with the selected file.
     if (type === "file") {
-      setProductData({ ...productData, [name]: files[0] });
+      setProductData((prevData) => ({
+        ...prevData,
+        [name]: files[0], // Store the selected file.
+      }));
     } else {
-      setProductData({ ...productData, [name]: value });
+      // If the input is a text input, update the productData with the new value.
+      setProductData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Product data : ", productData)
     const formData = new FormData();
     for (const key in productData) {
       formData.append(key, productData[key]);
     }
 
     if (editId) {
-      await updateProduct(editId, formData);
+      await updateProduct(editId, productData);
     } else {
       await createProduct(formData);
     }
@@ -324,9 +335,7 @@ export default function ProductEdit() {
   const updateProduct = async (id, data) => {
     console.log('Data ', data);
     try {
-      await axios.patch(baseUrl + `/product/update/${id}`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.patch(baseUrl + `/product/update/${id}`, data);
       toast.success("Product updated successfully!");
     } catch (error) {
       console.error(error.message);
