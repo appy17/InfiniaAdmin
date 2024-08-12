@@ -284,23 +284,47 @@ export default function ProductEdit() {
     }
   }, [product]);
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value, type, files } = e.target;
 
-    // If the input is a file input, update the productData with the selected file.
     if (type === "file") {
-      setProductData((prevData) => ({
-        ...prevData,
-        [name]: files[0], // Store the selected file.
-      }));
+      const file = files[0];
+
+      // Call the function to upload the file to Cloudinary
+      const fileUrl = await uploadToCloudinary(file);
+
+      // If the upload is successful, store the URL in the state
+      if (fileUrl) {
+        setProductData((prevData) => ({
+          ...prevData,
+          [name]: fileUrl,
+        }));
+      }
     } else {
-      // If the input is a text input, update the productData with the new value.
       setProductData((prevData) => ({
         ...prevData,
         [name]: value,
       }));
     }
   };
+const uploadToCloudinary = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "myCloud");
+  formData.append("cloud_name", "dnevtbn0x");
+
+  try {
+    const response = await axios.post(
+      "https://api.cloudinary.com/v1_1/dnevtbn0x/image/upload",
+      formData
+    );
+    return response.data.secure_url;
+  } catch (error) {
+    console.error("Error uploading to Cloudinary: ", error);
+    toast.error("Error uploading file");
+    return null;
+  }
+};
 
 
   const handleSubmit = async (e) => {
@@ -359,16 +383,6 @@ export default function ProductEdit() {
     }
   };
 
-  // const fetchProducts = async () => {
-  //   try {
-  //     const response = await axios.get(baseUrl + "/api/products");
-  //     setProducts(response.data.data);
-  //   } catch (error) {
-  //     console.error(error.message);
-  //     toast.error("Failed to fetch products.");
-  //   }
-  // };
-
   const resetForm = () => {
     setProductData({
       title: "",
@@ -403,10 +417,6 @@ export default function ProductEdit() {
     });
     setEditId(null);
   };
-
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, []);
 
   return (
     <div className="p-8 max-w-5xl mx-auto flex flex-col justify-center items-center bg-gray-200 ml-[250px]">
