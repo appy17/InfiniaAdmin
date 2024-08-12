@@ -9,7 +9,7 @@ export default function App() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Use useRef to keep the token across renders
   const tokenRef = useRef(localStorage.getItem("token"));
 
@@ -20,7 +20,7 @@ export default function App() {
     // Check if token exists in the ref
     const token = tokenRef.current;
     console.log("Token on page load:", token);
-    localStorage.setItem('url',location.pathname)
+    localStorage.setItem("url", location.pathname);
     if (token) {
       verifyToken(token);
     } else {
@@ -30,22 +30,27 @@ export default function App() {
 
   const verifyToken = async (token) => {
     try {
-      console.log('Verifying token...');
-      const response = await axios.post(`${baseUrl}/login/verifyToken`, { token });
-     
+      console.log("Verifying token...");
+      const response = await axios.post(`${baseUrl}/login/verifyToken`, {
+        token,
+      });
+
       if (response.data.valid) {
         setIsAuthenticated(true);
         navigate(localStorage.getItem("url"));
-      }
- {
+      } else {
         console.log("Token invalid");
-        // localStorage.removeItem("token");
-        tokenRef.current = null; 
+        localStorage.removeItem("token");
+        tokenRef.current = null;
+        setIsAuthenticated(false);
+        navigate("/login");
       }
     } catch (error) {
       console.error("Token verification failed", error);
       localStorage.removeItem("token");
       tokenRef.current = null;
+      setIsAuthenticated(false);
+      navigate("/login");
     } finally {
       setIsLoading(false);
     }
@@ -70,6 +75,7 @@ export default function App() {
       tokenRef.current = token;
       toast.success("Logged in Successfully");
       setIsAuthenticated(true);
+      navigate("/dashboard");
     } catch (error) {
       toast.error("Invalid Credentials");
       console.error("Login failed", error);
@@ -79,13 +85,26 @@ export default function App() {
   const handleLogout = (e) => {
     console.log("Logout function called");
     localStorage.removeItem("token");
-    tokenRef.current = null; 
+    tokenRef.current = null;
     setIsAuthenticated(false);
     navigate("/");
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        className="w-12 h-12 animate-spin"
+        viewBox="0 0 16 16"
+      >
+        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+        <path
+          fillRule="evenodd"
+          d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
+        />
+      </svg>
+    );
   }
 
   return (

@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { SiAboutdotme } from "react-icons/si";
 import { TbBrandSafari } from "react-icons/tb";
 import { MdOutlineEventSeat } from "react-icons/md";
+import { AiOutlineFontSize } from "react-icons/ai";
+import { MdProductionQuantityLimits } from "react-icons/md";
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -84,6 +86,26 @@ export default function Sidebar() {
               {isExpanded && (
                 <h3 className="transition-all duration-500 text-lg font-bold ml-2">
                   EVENTS
+                </h3>
+              )}
+            </div>
+          </Link>
+          <Link to="/ecomagix">
+            <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
+              <AiOutlineFontSize size={20} />
+              {isExpanded && (
+                <h3 className="transition-all duration-500 text-lg font-bold ml-2">
+                  ECOMAGIX
+                </h3>
+              )}
+            </div>
+          </Link>
+          <Link to="/product">
+            <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
+              <MdProductionQuantityLimits size={20} />
+              {isExpanded && (
+                <h3 className="transition-all duration-500 text-lg font-bold ml-2">
+                PRODUCTS
                 </h3>
               )}
             </div>

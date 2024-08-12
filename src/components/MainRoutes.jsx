@@ -9,6 +9,9 @@ import AboutMiddle from './Home/AboutMiddle'
 import AboutLast from './Home/AboutLast'
 import Brand from './Home/Brand'
 import Event from './Home/Event'
+import Ecomagix from './Home/Ecomagix'
+import ProductEdit from './Home/ProductEdit'
+import Product from './Home/Product'
 
 const MainRoutes = ({ onLogout }) => {
   return (
@@ -22,6 +25,9 @@ const MainRoutes = ({ onLogout }) => {
       <Route path="/aboutlast" element={<AboutLast />} />
       <Route path="/brand" element={<Brand />} />
       <Route path="/event" element={<Event />} />
+      <Route path="/ecomagix" element={<Ecomagix />} />
+      <Route path="/productedit" element={<ProductEdit />} />
+      <Route path="/product" element={<Product />} />
     </Routes>
   );
 };

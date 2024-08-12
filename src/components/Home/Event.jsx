@@ -4,18 +4,37 @@ import axios from "axios";
 
 export default function Event() {
   const [events, setEvents] = useState([]);
-
   const baseUrl = "http://localhost:8080";
 
   const handleEventChange = (e, index) => {
     const { name, value } = e.target;
+    if (name === "date" || name === "image" || name === "description") {
+      handleNestedEvent(e, index);
+    } else {
+      setEvents((prevEvents) =>
+        prevEvents.map((event, i) =>
+          i === index
+            ? {
+                ...event,
+                [name]: value,
+              }
+            : event
+        )
+      );
+    }
+  };
 
+  const handleNestedEvent = (e, index) => {
+    const { name, value } = e.target;
     setEvents((prevEvents) =>
       prevEvents.map((event, i) =>
         i === index
           ? {
               ...event,
-              [name]: value,
+              events: {
+                ...event.events[0],
+                [name]: value,
+              },
             }
           : event
       )
@@ -51,7 +70,10 @@ export default function Event() {
             i === index
               ? {
                   ...event,
-                  image: url,
+                  events: {
+                    ...event.events,
+                    image: url,
+                  },
                 }
               : event
           )
@@ -64,7 +86,7 @@ export default function Event() {
     try {
       const response = await axios.get(baseUrl + "/events");
       setEvents(response.data.data);
-      console.log("Events ", response.data.data);
+      console.log("Events ", response.data.data[0].events[0].Date);
     } catch (error) {
       console.error("Error fetching events: ", error);
     }
@@ -118,8 +140,8 @@ export default function Event() {
                 />
               </td>
               <td className="w-[20%]">
-                <img src={event.image} />
-                <a href={event.events[0].image}>View</a>
+                <img src={event.events?.image} alt="Event" />
+                <a href={event.events[0]?.image}>View</a>
                 <input
                   className="p-2 border-2 border-gray-700 w-full resize"
                   name="image"
@@ -132,17 +154,20 @@ export default function Event() {
                   className="p-2 border-2 border-gray-700 w-full resize"
                   name="description"
                   type="text"
-                  value={event.description}
-                  onChange={(e) => handleEventChange(e, index)}
+                  value={event.events[0]?.description}
+                  onChange={(e) => handleNestedEvent(e, index)}
                 />
               </td>
               <td className="w-[20%]">
                 <input
                   className="p-2 border-2 border-gray-700 w-full resize"
-                  name="date"
+                  name="Date"
                   type="date"
-                  value={event.date}
-                  onChange={(e) => handleEventChange(e, index)}
+                  value={new Date(event.events[0]?.Date).toLocaleDateString(
+                    "en-GB"
+                  )}
+                  // onClick={() => handleconsole(value)}
+                  onChange={(e) => handleNestedEvent(e, index)}
                 />
               </td>
               <td>
