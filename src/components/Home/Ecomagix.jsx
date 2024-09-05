@@ -6,7 +6,6 @@ export default function Ecomagix() {
   const [ecomagix, setEcomagix] = useState([]);
   const baseUrl = "http://localhost:8080";
 
-  // Handle changes in the form inputs
   const handleEcomagixChange = (e, id) => {
     const { name, value, dataset } = e.target;
     setEcomagix((prevEcomagix) =>
@@ -26,7 +25,6 @@ export default function Ecomagix() {
     );
   };
 
-  // Handle changes for image description
   const handleImageDescriptionChange = (e, id, index) => {
     const { value } = e.target;
     setEcomagix((prevEcomagix) =>
@@ -121,7 +119,7 @@ export default function Ecomagix() {
   };
 
   return (
-    <div className="border-2 m-[100px]">
+    <div className="border-2 ml-[-50px]">
       <h2 className="text-center p-3">ECOMAGIX SECTION</h2>
       <table className="table table-zebra w-[1200px]">
         <thead className="bg-gray-800 text-white w-full">
@@ -132,6 +130,7 @@ export default function Ecomagix() {
             <th>Action</th>
           </tr>
         </thead>
+       
         <tbody>
           {ecomagix.map((item) => (
             <tr key={item._id}>

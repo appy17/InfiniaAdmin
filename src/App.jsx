@@ -11,22 +11,26 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Use useRef to keep the token across renders
-  const tokenRef = useRef(localStorage.getItem("token"));
-
+  const tokenRef = useRef(sessionStorage.getItem("token"));
   const navigate = useNavigate();
   const baseUrl = "http://localhost:8080";
 
   useEffect(() => {
-    // Check if token exists in the ref
+    // Check if the session has an existing token
     const token = tokenRef.current;
+    const isUserAuthenticated = localStorage.getItem("isAuthenticated");
     console.log("Token on page load:", token);
-    localStorage.setItem("url", location.pathname);
-    if (token) {
-      verifyToken(token);
+
+    if (token && isUserAuthenticated) {
+      setIsAuthenticated(true);
+      setIsLoading(false);
     } else {
       setIsLoading(false);
     }
   }, []);
+
+  // email:admin@gmail.com
+  // password:12345
 
   const verifyToken = async (token) => {
     try {
@@ -37,17 +41,17 @@ export default function App() {
 
       if (response.data.valid) {
         setIsAuthenticated(true);
-        navigate(localStorage.getItem("url"));
+        navigate(localStorage.getItem("url") || "/dashboard");
       } else {
         console.log("Token invalid");
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         tokenRef.current = null;
         setIsAuthenticated(false);
         navigate("/login");
       }
     } catch (error) {
       console.error("Token verification failed", error);
-      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
       tokenRef.current = null;
       setIsAuthenticated(false);
       navigate("/login");
@@ -66,13 +70,13 @@ export default function App() {
 
   const handleVerify = async (event) => {
     event.preventDefault();
-    console.log("Path name ", location.pathname);
     try {
       const response = await axios.post(`${baseUrl}/login/verify`, credentials);
       const { token } = response.data;
       console.log("Token received:", token);
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("token", token); // Store the token in sessionStorage
       tokenRef.current = token;
+      localStorage.setItem("isAuthenticated", true); // Set flag to prevent re-login on refresh
       toast.success("Logged in Successfully");
       setIsAuthenticated(true);
       navigate("/dashboard");
@@ -84,9 +88,10 @@ export default function App() {
 
   const handleLogout = (e) => {
     console.log("Logout function called");
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     tokenRef.current = null;
     setIsAuthenticated(false);
+    localStorage.removeItem("isAuthenticated"); // Remove the flag on logout
     navigate("/");
   };
 
@@ -113,7 +118,7 @@ export default function App() {
         <Body onLogout={handleLogout} />
       ) : (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <div className="w-[249px] ml-[530px]">
             <img src={InfiniaLogo} alt="Infinia Logo" />
             <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
               Sign in to your account

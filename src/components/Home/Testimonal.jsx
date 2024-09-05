@@ -3,71 +3,58 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function Testimonial() {
-  const [testimonial, setTestimonial] = useState({
-    name: "",
-    city: "",
-    icon: "",
-    image: "",
-    title: "",
-  });
-
-  const [image, setImage] = useState();
-  const [icon, setIcon] = useState();
+  const [testimonials, setTestimonials] = useState([]);
 
   const baseUrl = "http://localhost:8080";
 
-  const handleTestimonialChange = (e) => {
+  const handleTestimonialChange = (e, id) => {
     const { name, value } = e.target;
-    setTestimonial((prevTestimonial) => ({
-      ...prevTestimonial,
-      [name]: value,
-    }));
-    console.log("Testimonial2 ", testimonial.icon);
+    setTestimonials((prevTestimonials) =>
+      prevTestimonials.map((testimonial) =>
+        testimonial._id === id ? { ...testimonial, [name]: value } : testimonial
+      )
+    );
   };
 
-   const uploadToCloudinary = async (file) => {
-     const formData = new FormData();
-     formData.append("file", file);
-     formData.append("upload_preset", "myCloud"); 
-     formData.append("cloud_name", "dnevtbn0x");
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "myCloud");
+    formData.append("cloud_name", "dnevtbn0x");
 
-     try {
-       const response = await axios.post(
-         "https://api.cloudinary.com/v1_1/dnevtbn0x/image/upload", 
-         formData
-       );
-      //  console.log("URL", response.data.secure_url);
-       return response.data.secure_url;
-       
-     } catch (error) {
-       console.error("Error uploading to Cloudinary: ", error);
-       toast.error("Error uploading file");
-       return null;
-     }
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dnevtbn0x/image/upload",
+        formData
+      );
+      return response.data.secure_url;
+    } catch (error) {
+      console.error("Error uploading to Cloudinary: ", error);
+      toast.error("Error uploading file");
+      return null;
+    }
   };
-  
-   const handleFileChange = async (e, type) => {
-     const file = e.target.files[0];
-     if (file) {
-       const url = await uploadToCloudinary(file);
-       if (url) {
-         setTestimonial((prevTestimonial) => {
-           const updatedTestimonial = { ...prevTestimonial, [type]: url };
-           console.log("Updated Testimonial", updatedTestimonial);
-           return updatedTestimonial;
-         });
-       }
-     }
-   };
 
+  const handleFileChange = async (e, type, id) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = await uploadToCloudinary(file);
+      if (url) {
+        setTestimonials((prevTestimonials) =>
+          prevTestimonials.map((testimonial) =>
+            testimonial._id === id
+              ? { ...testimonial, [type]: url }
+              : testimonial
+          )
+        );
+      }
+    }
+  };
 
   const fetchTestimonials = async () => {
     try {
       const response = await axios.get(baseUrl + "/testimonial");
-      setTestimonial(response.data.data[0]);
-      // console.log("Testimonial", response.data.data[0]);
-      setImage(response.data.data[0].image);
-      setIcon(response.data.data[0].icon);
+      setTestimonials(response.data.data);
     } catch (error) {
       console.error("Error fetching testimonials: ", error);
     }
@@ -77,22 +64,28 @@ export default function Testimonial() {
     fetchTestimonials();
   }, []);
 
-  const handleUpdate = async () => {
-    if (!testimonial) {
+  const handleUpdate = async (id) => {
+    const testimonialToUpdate = testimonials.find(
+      (testimonial) => testimonial._id === id
+    );
+    if (!testimonialToUpdate) {
       toast.error("Testimonial not found");
       return;
     }
     try {
-      // console.log("Testimonials ", testimonial._id);
       const response = await axios.patch(
-        `${baseUrl}/testimonial/update/${testimonial._id}`,
-        testimonial
+        `${baseUrl}/testimonial/update/${id}`,
+        testimonialToUpdate
       );
-      // console.log("hiiiiiiiiiiiiii");
-      toast.success("Data Updated Successfully");
+      if (response.status === 200) {
+        toast.success("Data Updated Successfully");
+        fetchTestimonials(); // Refresh the data after update
+      } else {
+        toast.error("Failed to update data");
+      }
     } catch (error) {
       toast.error("Something went wrong");
-      console.error(`Error occurred while deleting data: ${error}`);
+      console.error(`Error occurred while updating data: ${error}`);
     }
   };
 
@@ -111,62 +104,77 @@ export default function Testimonial() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="w-[20%]">
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="name"
-                type="text"
-                value={testimonial.name}
-                onChange={handleTestimonialChange}
-              />
-            </td>
-            <td className="w-[20%]">
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="city"
-                type="text"
-                value={testimonial.city}
-                onChange={handleTestimonialChange}
-              />
-            </td>
-            <td className="w-[20%]">
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="icon"
-                type="file"
-                onChange={(e) => handleFileChange(e, "icon")}
-              />
-              <a href={testimonial.icon}>View</a>
-            </td>
-            <td className="w-[20%]">
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="image"
-                type="file"
-                onChange={(e) => handleFileChange(e, "image")}
-              />
-              <a href={testimonial.image}>View</a>
-            </td>
-            <td className="w-[20%]">
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="title"
-                type="text"
-                value={testimonial.title}
-                onChange={handleTestimonialChange}
-              />
-            </td>
-
-            <td>
-              <button
-                className="btn btn-success text-white btn-sm items-center"
-                onClick={handleUpdate}
-              >
-                Update
-              </button>
-            </td>
-          </tr>
+          {testimonials.map((testimonial) => (
+            <tr key={testimonial._id}>
+              <td className="w-[20%]">
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="name"
+                  type="text"
+                  value={testimonial.name}
+                  onChange={(e) => handleTestimonialChange(e, testimonial._id)}
+                />
+              </td>
+              <td className="w-[20%]">
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="city"
+                  type="text"
+                  value={testimonial.city}
+                  onChange={(e) => handleTestimonialChange(e, testimonial._id)}
+                />
+              </td>
+              <td className="w-[20%]">
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="icon"
+                  type="file"
+                  onChange={(e) => handleFileChange(e, "icon", testimonial._id)}
+                />
+                <a
+                  href={testimonial.icon}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View
+                </a>
+              </td>
+              <td className="w-[20%]">
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="image"
+                  type="file"
+                  onChange={(e) =>
+                    handleFileChange(e, "image", testimonial._id)
+                  }
+                />
+                <a
+                  href={testimonial.image}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View
+                </a>
+              </td>
+              <td className="w-[20%]">
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="title"
+                  type="text"
+                  value={testimonial.title}
+                  onChange={(e) => handleTestimonialChange(e, testimonial._id)}
+                />
+              </td>
+              <td>
+                <button
+                  className="btn btn-success text-white btn-sm items-center"
+                  onClick={() => handleUpdate(testimonial._id)}
+                >
+                  Update
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

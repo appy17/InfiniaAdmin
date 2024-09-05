@@ -10,7 +10,7 @@ export default function Body({ onLogout }) {
       <Navbar onLogout={onLogout} />
       <div className="flex">
         <Sidebar />
-        <div className="mt-24 ml-[230px]">
+        <div className="mt-24 ml-[250px]">
           <MainRoutes />
         </div>
       </div>

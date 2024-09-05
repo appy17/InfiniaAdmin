@@ -9,19 +9,21 @@ export default function Product() {
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/product");
+      const response = await axios.get("http://localhost:8080/product"); // Fetch all products
       setProducts(response.data.data);
     } catch (error) {
-      console.log(`Something went wrong ${error}`);
+      console.error(
+        `Something went wrong while fetching products from backend: ${error}`
+      );
+      toast.error("Failed to fetch products");
     }
   };
 
   const handleUpdateProduct = (product) => {
     if (product) {
       navigate("/productedit", { state: { product } });
-      console.log('Product ', product);
     } else {
-      toast.error(`Product transfer failed`);
+      toast.error("Product transfer failed");
     }
   };
 
@@ -30,7 +32,7 @@ export default function Product() {
   }, []);
 
   return (
-    <div className="ml-[550px] mt-[50px]" style={styles.container}>
+    <div className="ml-[350px] mt-[50px]" style={styles.container}>
       <h1 style={styles.header}>Product Title</h1>
       <div style={styles.productList}>
         {Array.isArray(products) &&

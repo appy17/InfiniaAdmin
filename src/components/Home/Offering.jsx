@@ -111,6 +111,11 @@ const Offering = () => {
     }
   };
 
+  const handleDelete = (e,index) => {
+    console.log('rrrrrrrrrr',e)
+    console.log('ssssssssss',index)
+  }
+
   useEffect(() => {
     fetchHero();
   }, []);
@@ -179,13 +184,14 @@ const Offering = () => {
                           src={item.url}
                           alt={`img-${index}`}
                         />
-                        <div className="flex justify-between">
+                        <div className="flex justify-between cursor-pointer">
                           <input
                             type="file"
                             name="image"
+                            onClick={handleDelete}
                             onChange={(e) => handleFileChange(e, index)}
                           />
-                          <p>Delete</p>
+                          {/* <p>Delete</p> */}
                         </div>
                       </div>
                     ))}

@@ -9,6 +9,7 @@ import { TbBrandSafari } from "react-icons/tb";
 import { MdOutlineEventSeat } from "react-icons/md";
 import { AiOutlineFontSize } from "react-icons/ai";
 import { MdProductionQuantityLimits } from "react-icons/md";
+import { FaImage } from "react-icons/fa";
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -19,7 +20,7 @@ export default function Sidebar() {
 
   return (
     <div
-      className={`h-[85vh] fixed mt-[97px] pt-5 transition-width duration-500 z-20 ${
+      className={`h-[110vh] fixed mt-[100px] pt-5 transition-width duration-500 z-20 ${
         isExpanded ? "w-[14%]" : "w-[5%]"
       } bg-gray-100 shadow-lg`}
     >
@@ -90,22 +91,12 @@ export default function Sidebar() {
               )}
             </div>
           </Link>
-          <Link to="/ecomagix">
-            <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
-              <AiOutlineFontSize size={20} />
-              {isExpanded && (
-                <h3 className="transition-all duration-500 text-lg font-bold ml-2">
-                  ECOMAGIX
-                </h3>
-              )}
-            </div>
-          </Link>
           <Link to="/product">
             <div className="mt-4 flex items-center cursor-pointer w-full hover:bg-gray-200 p-2 rounded">
               <MdProductionQuantityLimits size={20} />
               {isExpanded && (
                 <h3 className="transition-all duration-500 text-lg font-bold ml-2">
-                PRODUCTS
+                  PRODUCTS
                 </h3>
               )}
             </div>

@@ -3,7 +3,7 @@ import React from 'react'
 const Dashoboard = () => {
   return (
     <div>
-     <p>This is Dashboard</p> 
+      <h1 className='text-center'>Welcome to Infinia Industry</h1> 
     </div>
   )
 }

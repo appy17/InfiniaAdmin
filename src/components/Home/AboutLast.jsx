@@ -3,23 +3,15 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function AboutLast() {
-  const [about, setAbout] = useState({
-    description: "",
-    image: "",
-    title: "",
-  });
-
-  const [image, setImage] = useState();
+  const [about, setAbout] = useState([]);
 
   const baseUrl = "http://localhost:8080";
 
-  const handleAboutChange = (e) => {
+  const handleAboutChange = (e, index) => {
     const { name, value } = e.target;
-    setAbout((prevAbout) => ({
-      ...prevAbout,
-      [name]: value,
-    }));
-    // console.log("ggggggggggggg ", about);
+    const updatedAbout = [...about];
+    updatedAbout[index][name] = value;
+    setAbout(updatedAbout);
   };
 
   const uploadToCloudinary = async (file) => {
@@ -41,16 +33,14 @@ export default function AboutLast() {
     }
   };
 
-  const handleFileChange = async (e, type) => {
+  const handleFileChange = async (e, index) => {
     const file = e.target.files[0];
     if (file) {
       const url = await uploadToCloudinary(file);
       if (url) {
-        setAbout((prevAbout) => {
-          const updatedAbout = { ...prevAbout, [type]: url };
-          console.log("Updated About", updatedAbout);
-          return updatedAbout;
-        });
+        const updatedAbout = [...about];
+        updatedAbout[index].image = url;
+        setAbout(updatedAbout);
       }
     }
   };
@@ -58,9 +48,15 @@ export default function AboutLast() {
   const fetchAbout = async () => {
     try {
       const response = await axios.get(baseUrl + "/aboutlast");
-      setAbout(response.data.data[0]);
+      const data = response.data.data;
+
+      if (Array.isArray(data)) {
+        setAbout(data);
+      } else {
+        setAbout([data]); // If data is not an array, convert it to an array with one object
+      }
+
       console.log("AboutLast", response);
-      setImage(response.data.data[0].image);
     } catch (error) {
       console.error("Error fetching about: ", error);
     }
@@ -70,23 +66,21 @@ export default function AboutLast() {
     fetchAbout();
   }, []);
 
-  const handleUpdate = async () => {
-    if (!about) {
-      // console.log("Aboutlasrtttttttt ", about);
+  const handleUpdate = async (index) => {
+    const aboutItem = about[index];
+    if (!aboutItem) {
       toast.error("About not found");
       return;
-    } else {
-      try {
-        const response = await axios.patch(
-          `${baseUrl}/aboutlast/update/${about._id}`,
-          about
-        );
-        // console.log("hiiiiiiiiiiiiii");
-        toast.success("Data Updated Successfully");
-      } catch (error) {
-        toast.error("Something went wrong");
-        console.error(`Error occurred while deleting data: ${error}`);
-      }
+    }
+    try {
+      const response = await axios.patch(
+        `${baseUrl}/aboutlast/update/${aboutItem._id}`,
+        aboutItem
+      );
+      toast.success("Data Updated Successfully");
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.error(`Error occurred while updating data: ${error}`);
     }
   };
 
@@ -103,45 +97,47 @@ export default function AboutLast() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="w-[20%]">
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="title"
-                type="text"
-                value={about.title}
-                onChange={handleAboutChange}
-              />
-            </td>
+          {about.map((item, index) => (
+            <tr key={item._id}>
+              <td className="w-[20%]">
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="title"
+                  type="text"
+                  value={item.title}
+                  onChange={(e) => handleAboutChange(e, index)}
+                />
+              </td>
 
-            <td className="w-[20%]">
-              <input
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="image"
-                type="file"
-                onChange={(e) => handleFileChange(e, "image")}
-              />
-              <a href={about.image}>View</a>
-            </td>
-            <td className="w-[20%]">
-              <textarea
-                className="p-2 border-2 border-gray-700 w-full resize"
-                name="description"
-                type="text"
-                value={about.description}
-                onChange={handleAboutChange}
-              />
-            </td>
+              <td className="w-[20%]">
+                <input
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="image"
+                  type="file"
+                  onChange={(e) => handleFileChange(e, index)}
+                />
+                <a href={item.image}>View</a>
+              </td>
+              <td className="w-[20%]">
+                <textarea
+                  className="p-2 border-2 border-gray-700 w-full resize"
+                  name="description"
+                  type="text"
+                  value={item.description}
+                  onChange={(e) => handleAboutChange(e, index)}
+                />
+              </td>
 
-            <td>
-              <button
-                className="btn btn-success text-white btn-sm items-center"
-                onClick={handleUpdate}
-              >
-                Update
-              </button>
-            </td>
-          </tr>
+              <td>
+                <button
+                  className="btn btn-success text-white btn-sm items-center"
+                  onClick={() => handleUpdate(index)}
+                >
+                  Update
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

@@ -12,6 +12,7 @@ import Event from './Home/Event'
 import Ecomagix from './Home/Ecomagix'
 import ProductEdit from './Home/ProductEdit'
 import Product from './Home/Product'
+import Claymagix from './Home/Claymagix'
 
 const MainRoutes = ({ onLogout }) => {
   return (
@@ -28,6 +29,7 @@ const MainRoutes = ({ onLogout }) => {
       <Route path="/ecomagix" element={<Ecomagix />} />
       <Route path="/productedit" element={<ProductEdit />} />
       <Route path="/product" element={<Product />} />
+      <Route path="/claymagix" element={<Claymagix />} />
     </Routes>
   );
 };
