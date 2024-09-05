@@ -191,7 +191,7 @@ export default function App() {
               </div>
             </form>
 
-            <p className="mt-10 text-center text-sm text-gray-500">
+            {/* <p className="mt-10 text-center text-sm text-gray-500">
               Not a member?{" "}
               <a
                 href="#"
@@ -199,7 +199,7 @@ export default function App() {
               >
                 Start a 14 day free trial
               </a>
-            </p>
+            </p> */}
           </div>
         </div>
       )}
