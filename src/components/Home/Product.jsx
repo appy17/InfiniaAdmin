@@ -9,7 +9,9 @@ export default function Product() {
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/product"); // Fetch all products
+      const response = await axios.get(
+        "https://infinia-kappa.vercel.app/product"
+      ); // Fetch all products
       setProducts(response.data.data);
     } catch (error) {
       console.error(

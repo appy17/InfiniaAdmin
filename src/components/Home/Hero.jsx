@@ -6,7 +6,7 @@ const Hero = () => {
 
   const fetchHero = () => {
     axios
-      .get("http://localhost:8080/hero")
+      .get("https://infinia-kappa.vercel.app")
       .then((res) => {
         // console.log(res.data);
         setHero(res.data.data[0]);

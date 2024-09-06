@@ -8,8 +8,8 @@ export default function Carousal() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [addImage, setAddImage] = useState(false);
 
-  // const baseUrl = "https://infinia-kappa.vercel.app";
-  const baseUrl = "http://localhost:8080";
+  const baseUrl = "https://infinia-kappa.vercel.app";
+  // const baseUrl = "http://localhost:8080";
 
   useEffect(() => {
     fetchImages();

@@ -5,7 +5,8 @@ import axios from "axios";
 export default function Testimonial() {
   const [testimonials, setTestimonials] = useState([]);
 
-  const baseUrl = "http://localhost:8080";
+  // const baseUrl = "http://localhost:8080";
+ const baseUrl = "https://infinia-kappa.vercel.app";
 
   const handleTestimonialChange = (e, id) => {
     const { name, value } = e.target;

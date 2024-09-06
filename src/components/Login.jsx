@@ -20,7 +20,8 @@
       }));
     };
 
-    const baseUrl = "http://localhost:8080";
+    // const baseUrl = "http://localhost:8080";
+     const baseUrl = "https://infinia-kappa.vercel.app";
 
     const handleVerify = async (event) => {
       event.preventDefault();

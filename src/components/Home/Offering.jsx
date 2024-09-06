@@ -73,7 +73,10 @@ const Offering = () => {
   const handleUpdate = () => {
     const updatedData = { ...data, images: imgArr };
     axios
-      .put(`http://localhost:8080/offering/update/${data._id}`, updatedData)
+      .put(
+        `https://infinia-kappa.vercel.app/offering/update/${data._id}`,
+        updatedData
+      )
       .then((res) => {
         toast.success("Data added successfully");
       })

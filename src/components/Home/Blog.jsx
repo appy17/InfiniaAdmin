@@ -5,8 +5,8 @@ import axios from "axios";
 export default function Blog() {
   const [blogs, setBlogs] = useState([]);
 
-  // const baseUrl = "https://infinia-kappa.vercel.app";
-  const baseUrl = "http://localhost:8080";
+  const baseUrl = "https://infinia-kappa.vercel.app";
+  // const baseUrl = "http://localhost:8080";
 
   const handleBlogChange = (index, e) => {
     const { name, value } = e.target;
