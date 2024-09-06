@@ -83,7 +83,7 @@ export default function App() {
       setIsAuthenticated(true);
       navigate("/dashboard");
     } catch (error) {
-      toast.error("Invalid Credentials2");
+      toast.error("Invalid Credentials");
       console.log('Error ',error)
       console.error("Login failed", error);
     }
