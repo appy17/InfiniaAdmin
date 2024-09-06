@@ -18,7 +18,7 @@ const Offering = () => {
 
   const fetchHero = () => {
     axios
-      .get("http://localhost:8080/offering")
+      .get("https://infinia-kappa.vercel.app/offering")
       .then((res) => {
         setData(res.data.data[0]);
         setImgArr(res.data.data[0].images);

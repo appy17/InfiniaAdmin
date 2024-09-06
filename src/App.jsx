@@ -76,9 +76,9 @@ export default function App() {
       const response = await axios.post(`${baseUrl}/login/verify`, credentials);
       const { token } = response.data;
       console.log("Token received:", token);
-      sessionStorage.setItem("token", token); // Store the token in sessionStorage
+      sessionStorage.setItem("token", token); 
       tokenRef.current = token;
-      localStorage.setItem("isAuthenticated", true); // Set flag to prevent re-login on refresh
+      localStorage.setItem("isAuthenticated", true); 
       toast.success("Logged in Successfully");
       setIsAuthenticated(true);
       navigate("/dashboard");

@@ -48,7 +48,7 @@ const Woodmagix = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/woodmagix",
+        "https://infinia-kappa.vercel.app/woodmagix",
         formState
       );
       console.log(response.data.msg);

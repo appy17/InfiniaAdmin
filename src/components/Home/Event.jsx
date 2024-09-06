@@ -5,6 +5,7 @@ import axios from "axios";
 export default function Event() {
   const [events, setEvents] = useState([]);
   const baseUrl = "http://localhost:8080";
+  // const baseUrl = "http://localhost:8080";
 
   const handleEventChange = (e, index) => {
     const { name, value } = e.target;
