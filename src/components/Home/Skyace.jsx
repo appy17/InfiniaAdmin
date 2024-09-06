@@ -48,7 +48,7 @@ const Skyace = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/skyace",
+        "https://infinia-kappa.vercel.app/skyace",
         formState
       );
       console.log(response.data.msg);

@@ -26,7 +26,7 @@ const Hero = () => {
 
   const handleUpdate = () => {
     axios
-      .patch(`http://localhost:8080/hero/update/${hero._id}`, hero)
+      .patch(`https://infinia-kappa.vercel.app/hero/update/${hero._id}`, hero)
       .then((res) => {
         // console.log(res.data.success);
         alert(res.data.msg);

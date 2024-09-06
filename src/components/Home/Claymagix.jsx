@@ -48,7 +48,7 @@ const Claymagix = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/claymagix",
+        "https://infinia-kappa.vercel.app/claymagix",
         formState
       );
       console.log(response.data.msg);
