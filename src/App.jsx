@@ -71,6 +71,7 @@ export default function App() {
   const handleVerify = async (event) => {
     event.preventDefault();
     try {
+      console.log('login function call')
       const response = await axios.post(`${baseUrl}/login/verify`, credentials);
       const { token } = response.data;
       console.log("Token received:", token);
@@ -81,7 +82,8 @@ export default function App() {
       setIsAuthenticated(true);
       navigate("/dashboard");
     } catch (error) {
-      toast.error("Invalid Credentials");
+      toast.error("Invalid Credentials2");
+      console.log('Error ',error)
       console.error("Login failed", error);
     }
   };
