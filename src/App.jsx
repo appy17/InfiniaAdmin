@@ -71,7 +71,7 @@ export default function App() {
   const handleVerify = async (event) => {
     event.preventDefault();
     try {
-      console.log('login function call')
+      console.log("login function call", `${baseUrl}/login/verify`);
       const response = await axios.post(`${baseUrl}/login/verify`, credentials);
       const { token } = response.data;
       console.log("Token received:", token);
