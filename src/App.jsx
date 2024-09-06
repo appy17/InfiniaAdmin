@@ -7,7 +7,7 @@ import InfiniaLogo from "../src/assets/InfiniaLogo.png";
 
 export default function App() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // Use useRef to keep the token across renders
