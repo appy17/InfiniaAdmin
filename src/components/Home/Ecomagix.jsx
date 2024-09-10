@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Ecomagix() {
   const [ecomagix, setEcomagix] = useState([]);
@@ -119,9 +120,26 @@ export default function Ecomagix() {
     }
   };
 
+  const navigate = useNavigate()
+
+  const navigateBack = () => {
+  navigate(-1)
+  }
+
   return (
     <div className="border-2 ml-[-50px]">
-      <h2 className="text-center p-3">ECOMAGIX SECTION</h2>
+      <div className="flex">
+        <button
+          onClick={navigateBack}
+          className="h-[40px] mt-[10px] mb-[10px] cursor-pointer transition-all bg-blue-500 text-white px-6 py-2 rounded-lg
+border-blue-600
+border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px]
+active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
+        >
+          Back
+        </button>
+        <h2 className="text-center p-3 ml-[450px]">ECOMAGIX SECTION</h2>
+      </div>
       <table className="table table-zebra w-[1200px]">
         <thead className="bg-gray-800 text-white w-full">
           <tr>
@@ -131,7 +149,7 @@ export default function Ecomagix() {
             <th>Action</th>
           </tr>
         </thead>
-       
+
         <tbody>
           {ecomagix.map((item) => (
             <tr key={item._id}>
@@ -166,7 +184,6 @@ export default function Ecomagix() {
                       className="mt-2"
                       style={{ width: "100px", height: "100px" }}
                     />
-                  
                   </div>
                 ))}
               </td>

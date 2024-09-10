@@ -63,6 +63,7 @@ export default function About() {
 
  const fetchAbout = async () => {
    try {
+     console.log("url ", baseUrl + "/abouthead");
      const response = await axios.get(baseUrl + "/abouthead");
      setAbout(response.data.data[0]);
     //  console.log("About", response.data.data[0]);

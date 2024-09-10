@@ -18,7 +18,7 @@ const Offering = () => {
 
   const fetchHero = () => {
     axios
-      .get("https://infinia-kappa.vercel.app/offering")
+      .get("https://infinia-backend.onrender.com/offering")
       .then((res) => {
         setData(res.data.data[0]);
         setImgArr(res.data.data[0].images);
@@ -74,7 +74,7 @@ const Offering = () => {
     const updatedData = { ...data, images: imgArr };
     axios
       .put(
-        `https://infinia-kappa.vercel.app/offering/update/${data._id}`,
+        `https://infinia-backend.onrender.com/offering/update/${data._id}`,
         updatedData
       )
       .then((res) => {
