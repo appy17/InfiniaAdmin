@@ -1,21 +1,21 @@
 import axios from "axios";
+// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 
 const Hero = () => {
-  const [hero, setHero] = useState({}); // Initialize hero as an empty object
+  const [hero, setHero] = useState({});
+  
 
   const fetchHero = async () => {
     try {
-      const res = await axios.get("https://infinia-backend.onrender.com");
-      console.log("Fetched Data:", res.data);
+      const res = await axios.get("https://infiniaback.onrender.com/hero");
+      console.log("Fetched Data:", res.data.data[0]);
 
-      setHero(res.data);
-      console.log("Hero ", hero);
+      setHero(res.data.data[0]);
     } catch (error) {
       console.log(error.message);
     }
   };
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,15 +27,12 @@ const Hero = () => {
 
   const handleUpdate = () => {
     axios
-      .patch(
-        `https://infinia-backend.onrender.com/hero/update/${hero._id}`,
-        hero
-      )
+      .patch(`https://infinia-backend.onrender.com/hero/update/${hero._id}`, hero)
       .then((res) => {
-        alert(res.data.msg); 
+        alert(res.data.msg);
       })
       .catch((error) => {
-        console.log(error.message);
+        console.log(error);
       });
   };
 
@@ -66,7 +63,7 @@ const Hero = () => {
                       name="title"
                       type="text"
                       onChange={handleChange}
-                      value={hero || ""} // Default to empty string if title is undefined
+                      value={hero.title || ""}
                     />
                   </td>
                   <td className="w-[50%]">
@@ -75,7 +72,7 @@ const Hero = () => {
                       name="subTitle"
                       type="text"
                       onChange={handleChange}
-                      value={hero.subTitle || ""}  undefined
+                      value={hero.subTitle || ""}
                     />
                   </td>
                   <td>
@@ -84,7 +81,7 @@ const Hero = () => {
                       name="buttonText"
                       type="text"
                       onChange={handleChange}
-                      value={hero.buttonText || ""} // Default to empty string if buttonText is undefined
+                      value={hero.buttonText || ""}
                     />
                   </td>
                   <td>
@@ -118,14 +115,14 @@ const Hero = () => {
                       name="num1"
                       type="text"
                       onChange={handleChange}
-                      value={hero.num1 || ""} // Default to empty string if num1 is undefined
+                      value={hero.num1 || ""}
                     />
                     <input
                       className="p-2 border-2 border-gray-700 w-full resize"
                       name="num1Des"
                       type="text"
                       onChange={handleChange}
-                      value={hero.num1Des || ""} // Default to empty string if num1Des is undefined
+                      value={hero.num1Des || ""}
                     />
                   </td>
                   <td className="w-[20%]">
@@ -134,14 +131,14 @@ const Hero = () => {
                       name="num2"
                       type="text"
                       onChange={handleChange}
-                      value={hero.num2 || ""} // Default to empty string if num2 is undefined
+                      value={hero.num2 || ""}
                     />
                     <input
                       className="p-2 border-2 border-gray-700 w-full resize"
                       name="num2Des"
                       type="text"
                       onChange={handleChange}
-                      value={hero.num2Des || ""} // Default to empty string if num2Des is undefined
+                      value={hero.num2Des || ""}
                     />
                   </td>
                   <td className="w-[20%]">
@@ -150,14 +147,14 @@ const Hero = () => {
                       name="num3"
                       type="text"
                       onChange={handleChange}
-                      value={hero.num3 || ""} // Default to empty string if num3 is undefined
+                      value={hero.num3 || ""}
                     />
                     <input
                       className="p-2 border-2 border-gray-700 w-full resize"
                       name="num3Des"
                       type="text"
                       onChange={handleChange}
-                      value={hero.num3Des || ""} // Default to empty string if num3Des is undefined
+                      value={hero.num3Des || ""}
                     />
                   </td>
                   <td className="w-[20%]">
@@ -166,14 +163,14 @@ const Hero = () => {
                       name="num4"
                       type="text"
                       onChange={handleChange}
-                      value={hero.num4 || ""} // Default to empty string if num4 is undefined
+                      value={hero.num4 || ""}
                     />
                     <input
                       className="p-2 border-2 border-gray-700 w-full resize"
                       name="num4Des"
                       type="text"
                       onChange={handleChange}
-                      value={hero.num4Des || ""} // Default to empty string if num4Des is undefined
+                      value={hero.num4Des || ""}
                     />
                   </td>
 

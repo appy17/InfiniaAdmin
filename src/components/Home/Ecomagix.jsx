@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -5,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Ecomagix() {
   const [ecomagix, setEcomagix] = useState([]);
-  const baseUrl = "https://infinia-kappa.vercel.app";
+  const baseUrl = "https://infiniaback.onrender.com";
   // const baseUrl = "http://localhost:8080";
 
   const handleEcomagixChange = (e, id) => {
@@ -27,23 +28,22 @@ export default function Ecomagix() {
     );
   };
 
-  const handleImageDescriptionChange = (e, id, index) => {
-    const { value } = e.target;
-    setEcomagix((prevEcomagix) =>
-      prevEcomagix.map((item) =>
-        item._id === id
-          ? {
-              ...item,
-              images: item.images.map((image, imgIndex) =>
-                imgIndex === index ? { ...image, description: value } : image
-              ),
-            }
-          : item
-      )
-    );
-  };
+  // const handleImageDescriptionChange = (e, id, index) => {
+  //   const { value } = e.target;
+  //   setEcomagix((prevEcomagix) =>
+  //     prevEcomagix.map((item) =>
+  //       item._id === id
+  //         ? {
+  //             ...item,
+  //             images: item.images.map((image, imgIndex) =>
+  //               imgIndex === index ? { ...image, description: value } : image
+  //             ),
+  //           }
+  //         : item
+  //     )
+  //   );
+  // };
 
-  // Upload file to Cloudinary
   const uploadToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -103,7 +103,7 @@ export default function Ecomagix() {
     fetchEcomagix();
   }, []);
 
-  // Handle update action
+  
   const handleUpdate = async (id) => {
     const itemToUpdate = ecomagix.find((item) => item._id === id);
     if (!itemToUpdate) {

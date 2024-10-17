@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import axios from "axios";
+// eslint-disable-next-line no-unused-vars
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const uploadToCloudinary = async (file) => {
   const formData = new FormData();
@@ -21,72 +23,137 @@ const uploadToCloudinary = async (file) => {
 };
 
 const Woodmagix = () => {
+  const [subpoints, setSubpoints] = useState([])
+  const navigate = useNavigate();
+  const [infoArray, setInfoArray] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null);
   const [formState, setFormState] = useState({
     title: "",
     title2: "",
-    bgimage: "",
-    para: "",
-    info: {
-      heading: "",
-      points: [],
-    },
-    images: [],
+    background: "",
+    heading: "",
+    paragraph: "",
+    points: "",
+    images: [""],
   });
+  const [entries, setEntries] = useState([]);
+  const [editingId, setEditingId] = useState(null);
 
-  const [newPoint, setNewPoint] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const baseUrl = "https://infiniaback.onrender.com/woodmagix";
 
-  const navigate = useNavigate();
-
-  const handleFileChange = async (e, field) => {
-    const files = e.target.files;
-    if (files.length) {
-      const urls = [];
-      for (let i = 0; i < files.length; i++) {
-        const url = await uploadToCloudinary(files[i]);
-        if (url) urls.push(url);
-      }
-      if (field === "images") {
-        setFormState((prevState) => ({
-          ...prevState,
-          images: [...prevState.images, ...urls],
-        }));
-      } else {
-        setFormState((prevState) => ({
-          ...prevState,
-          [field]: urls[0],
-        }));
+  const handleFileChange = async (e, fieldName, index = null) => {
+    const file = e.target.files;
+    if (file.length) {
+      const url = await uploadToCloudinary(file);
+      if (url) {
+        if (fieldName === "background") {
+          setFormState((prevState) => ({
+            ...prevState,
+            background: url,
+          }));
+        } else if (fieldName === "images" && index !== null) {
+          setFormState((prevState) => {
+            const newImages = [...prevState.images];
+            newImages[index] = url;
+            return { ...prevState, images: newImages };
+          });
+        }
       }
     }
   };
 
-  const handleAddPoint = () => {
-    if (newPoint.trim()) {
-      setFormState((prevState) => ({
-        ...prevState,
-        info: {
-          ...prevState.info,
-          points: [...prevState.info.points, newPoint],
-        },
-      }));
-      setNewPoint("");
-    }
+  const handleAddImage = () => {
+    setFormState((prevState) => ({
+      ...prevState,
+      images: [...prevState.images, ""],
+    }));
+  };
+
+  const handleRemoveImage = (index) => {
+    setFormState((prevState) => {
+      const newImages = [...prevState.images];
+      newImages.splice(index, 1);
+      newImages.push("");
+      return { ...prevState, images: newImages };
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const updatedFormState = {
+      ...formState,
+   
+    };
+
+    // console.log("Form Data:", updatedFormState);
+
     try {
-      const response = await axios.post(
-        "https://infinia-backend.onrender.com/woodmagix",
-        formState
-      );
-      setSuccessMessage("Form submitted successfully!");
-      setErrorMessage("");
-      navigate("/woodmagix-list");
+      if (editingId) {
+        console.log("edit", editingId);
+        await axios.patch(`${baseUrl}/update/${editingId}`, updatedFormState);
+
+        toast.success("Entry updated successfully");
+      } else {
+        // await axios.post(`${baseUrl}/create`, updatedFormState);
+        toast.success("Entry created successfully");
+      }
+      setFormState({
+        title: "",
+        title2: "",
+        background: "",
+        heading: "",
+        paragraph: "",
+        points: [""],
+        images: [""],
+      });
+      setEditingId(null);
+      fetchData();
     } catch (error) {
-      setErrorMessage("Error submitting form, please try again.");
-      setSuccessMessage("");
+      console.log(`Occured error while handling submit ${error}`);
+      toast.error("Error submitting form");
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}`);
+      console.log("res", response.data[0])
+      const data = response?.data ?? [];
+      setSubpoints( response.data[0].subpoints)
+      setInfoArray(response.data[0].info);
+      console.log("dattta", response.data[0].info);
+      setEntries(Array.isArray(data) ? data : [data]);
+      setFormState(response?.data[0] || {});
+    } catch (error) {
+      console.log(error);
+      toast.error("Error fetching entries");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleEdit = (entry) => {
+    // setFormState({
+    //   title: entry.title,
+    //   title2: entry.title2,
+    //   background: entry.bgimage,
+    //   heading: entry.info?.heading,
+    //   paragraph: entry.para,
+    //   points: entry.info?.points || [""],
+    //   images: entry.images || [""],
+    // });
+    setEditingId(entry._id);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${baseUrl}/${id}`);
+      toast.success("Entry deleted successfully");
+      fetchData();
+    } catch (error) {
+      toast.error("Error deleting entry");
     }
   };
 
@@ -94,149 +161,233 @@ const Woodmagix = () => {
     navigate(-1);
   };
 
+  const handleEdit1 = (index) => {
+    setEditingIndex(index);
+  };
+
+  const handleUpdateChange = (e, field, index, pointIndex = null) => {
+    const updatedArray = [...infoArray];
+
+    if (field === "heading") {
+      updatedArray[index].heading = e.target.value;
+    } else if (field === "points") {
+      updatedArray[index].points[pointIndex] = e.target.value;
+    }
+
+    setInfoArray(updatedArray);
+  };
+
+  const handleSave = async (i) => {
+    delete formState.info;
+
+    const updatedObject = infoArray[i];
+
+    const updatedArray = infoArray.map((item, index) => {
+      return index === i ? updatedObject : item;
+    });
+
+    const dispatch = {
+      ...formState,
+      info: updatedArray,
+      subpoints:subpoints
+    };
+
+    try {
+      await axios.patch(`${baseUrl}/update/${formState._id}`, dispatch);
+      alert("Update Successful!");
+    } catch (error) {
+      console.error("Error updating object:", error);
+    }
+
+    setEditingIndex(null);
+    fetchData();
+  };
+
+ 
+    const handleInputChange = (index, event) => {
+      const newSubpoints = [...subpoints]; 
+      newSubpoints[index].title = event.target.value; 
+      setSubpoints(newSubpoints); 
+    };
+
+  console.log("appy1", subpoints);
+
   return (
-    <div>
+    <div className="flex">
       <button
         onClick={navigateBack}
-        className="h-[40px] mt-[10px] mb-[10px] cursor-pointer transition-all bg-blue-500 text-white px-6 py-2 rounded-lg
-          border-blue-600
-          border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px]
-          active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
+        className="h-[40px] mt-[10px] mb-[10px] cursor-pointer transition-all bg-blue-500 text-white px-6 py-2 rounded-lg border-blue-600 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
       >
         Back
       </button>
-      <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+      <div className="ml-[400px] p-6 bg-white shadow-md rounded-lg">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Woodmagix</h1>
-
-        {errorMessage && (
-          <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">
-            {errorMessage}
-          </div>
-        )}
-        {successMessage && (
-          <div className="bg-green-100 text-green-700 p-2 mb-4 rounded">
-            {successMessage}
-          </div>
-        )}
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">Title</label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formState.title}
-            onChange={(e) =>
-              setFormState({ ...formState, title: e.target.value })
-            }
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            Title 2
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formState.title2}
-            onChange={(e) =>
-              setFormState({ ...formState, title2: e.target.value })
-            }
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            Background Image
-          </label>
-          <input
-            type="file"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onChange={(e) => handleFileChange(e, "bgimage")}
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            Heading
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formState.info.heading}
-            onChange={(e) =>
-              setFormState({
-                ...formState,
-                info: { ...formState.info, heading: e.target.value },
-              })
-            }
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            Paragraph
-          </label>
-          <textarea
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formState.para}
-            onChange={(e) =>
-              setFormState({ ...formState, para: e.target.value })
-            }
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">Points</label>
-          <input
-            type="text"
-            value={newPoint}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onChange={(e) => setNewPoint(e.target.value)}
-          />
-          <button
-            type="button"
-            onClick={handleAddPoint}
-            className="mt-2 bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          >
-            Add Point
-          </button>
-          <ul className="list-disc ml-6 mt-2">
-            {formState.info.points.map((point, index) => (
-              <li key={index} className="text-gray-700">
-                {point}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">Images</label>
-          <input
-            type="file"
-            multiple
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onChange={(e) => handleFileChange(e, "images")}
-          />
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-4">
-          {formState.images.map((image, index) => (
-            <img
-              key={index}
-              src={image}
-              alt={`image-${index}`}
-              className="h-32 object-cover"
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-1">
+              Title
+            </label>
+            <input
+              type="text"
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formState?.title}
+              onChange={(e) =>
+                setFormState({ ...formState, title: e.target.value })
+              }
             />
-          ))}
-        </div>
+          </div>
 
-        <button
-          onClick={handleSubmit}
-          className="w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 mt-6"
-        >
-          Submit
-        </button>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-1">
+              Background Image
+            </label>
+            <input
+              type="file"
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e) => handleFileChange(e, "background")}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-1">
+              Paragraph
+            </label>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formState?.para}
+              onChange={(e) =>
+                setFormState({ ...formState, para: e.target.value })
+              }
+            />
+            <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Sub Para
+            </label>
+            {subpoints.map((item, index) => (
+        <div key={index}>
+          <input
+            type="text"
+            value={item.title} // Set the value from state
+            onChange={(event) => handleInputChange(index, event)} // Update on change
+          />
+        </div>
+      ))}
+            </div>
+          </div>
+
+          <div>
+            {infoArray.map((info, index) => (
+              <div key={info._id}>
+                {editingIndex === index ? (
+                  <div>
+                    <input
+                      type="text"
+                      value={info.heading}
+                      onChange={(e) => handleUpdateChange(e, "heading", index)}
+                    />
+
+                    {info.points.map((point, pointIndex) => (
+                      <input
+                        key={pointIndex}
+                        type="text"
+                        value={point}
+                        onChange={(e) =>
+                          handleUpdateChange(e, "points", index, pointIndex)
+                        }
+                      />
+                    ))}
+
+                    <button
+                      className="w-[50%] bg-green-500 text-white p-2 rounded hover:bg-blue-600 transition"
+                      onClick={() => handleSave(index)}
+                    >
+                      Save
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <h3>{info.heading}</h3>
+                    <ul>
+                      {info.points.map((point, idx) => (
+                        <li key={idx}>{point}</li>
+                      ))}
+                    </ul>
+                    <button
+                      className="w-[50%] bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
+                      onClick={() => handleEdit1(index)}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div> 
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-1">
+              Images
+            </label>
+            {formState.images.map((image, index) => (
+              <div key={index} className="flex mb-2">
+                <input
+                  type="file"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => handleFileChange(e, "images", index)}
+                />
+                <button
+                  type="button"
+                  className="ml-2 text-red-500"
+                  onClick={() => handleRemoveImage(index)}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="mt-2 text-blue-500"
+              onClick={handleAddImage}
+            >
+              Add Image
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
+          >
+            {editingId ? "Update" : "Submit"}
+          </button>
+        </form>
+
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Entries</h2>
+          {Array.isArray(entries) && entries.length > 0 ? (
+            entries.map((entry) => (
+              <div
+                key={entry._id}
+                className="mb-4 p-4 border border-gray-300 rounded-lg"
+              >
+                <h3 className="text-lg font-semibold">{entry.title}</h3>
+                <button
+                  className="mr-2 text-blue-500"
+                  onClick={() => handleEdit(entry)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="text-red-500"
+                  onClick={() => handleDelete(entry._id)}
+                >
+                  Delete
+                </button>
+              </div>
+            ))
+          ) : (
+            <p>No entries available.</p>
+          )}
+        </div>
       </div>
     </div>
   );

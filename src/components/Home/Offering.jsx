@@ -74,7 +74,7 @@ const Offering = () => {
     const updatedData = { ...data, images: imgArr };
     axios
       .put(
-        `https://infinia-backend.onrender.com/offering/update/${data._id}`,
+        `https://infiniaback.onrender.com/offering/update/${data._id}`,
         updatedData
       )
       .then((res) => {

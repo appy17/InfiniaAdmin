@@ -243,7 +243,7 @@ export default function ProductEdit() {
 
   const [products, setProducts] = useState([]);
   // const baseUrl = `http://localhost:8080`;
-   const baseUrl = "https://infinia-kappa.vercel.app";
+   const baseUrl = "https://infiniaback.onrender.com";
   const [productData, setProductData] = useState({
     title: "",
     description: "",

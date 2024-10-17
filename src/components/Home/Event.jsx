@@ -4,7 +4,7 @@ import axios from "axios";
 
 export default function Event() {
   const [events, setEvents] = useState([]);
-   const baseUrl = "https://infinia-kappa.vercel.app";
+   const baseUrl = "https://infiniaback.onrender.com";
   // const baseUrl = "http://localhost:8080";
 
   const handleEventChange = (e, index) => {

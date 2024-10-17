@@ -11,7 +11,7 @@ export default function AboutMiddle() {
 
   const [image, setImage] = useState();
 
-  const baseUrl = "https://infinia-kappa.vercel.app";
+  const baseUrl = "https://infiniaback.onrender.com";
   // const baseUrl = "http://localhost:8080";
 
   const handleAboutChange = (e) => {
